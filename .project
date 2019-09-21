@@ -33,5 +33,10 @@
 			<type>2</type>
 			<location>D:/SyncFolder/Workspace/STM32_projects/ExFunLib/Src</location>
 		</link>
+		<link>
+			<name>ExFun_Src</name>
+			<type>2</type>
+			<location>C:/Users/Artem/Documents/STM32_projects/ExFunLib/Src</location>
+		</link>
 	</linkedResources>
 </projectDescription>

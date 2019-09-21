@@ -7,3 +7,5 @@
 *.mxproject
 *.launch
 *.ld
+.log
+.project
