@@ -38,6 +38,16 @@ extern "C" {
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
 
+typedef enum{
+	exactoSD_init = 0,
+	exactoSD_erro,
+	exactoSD_wait,
+	exactoSD_meas
+}exactoSD_modes;
+
+
+
+
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/

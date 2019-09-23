@@ -68,6 +68,8 @@ UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
 
+exactoSD_modes BaseMode = exactoSD_init;
+
 __IO uint8_t flgBtnPress = 0;
 __IO uint8_t TargetI2Cdevice = 0xff;
 
@@ -143,6 +145,7 @@ int main(void)
   MX_FATFS_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
+  BaseMode = exactoSD_erro;
 
 #ifdef I2C_mode
   uint16_t possibleIndex;
@@ -181,6 +184,7 @@ int main(void)
 	  {
 #endif
 #ifdef SD_mode
+		  BaseMode = exactoSD_wait;
 		  //check file names
 		  uint16_t iterator = 1;
 		  SDcardOpenDir(&sdcfhtd, "dtss");
@@ -216,8 +220,10 @@ int main(void)
 #ifdef I2C_mode
 	  }
 #endif
+#ifdef SD_mode
 	  __NOP();
   }
+#endif
   __NOP();
 
 
@@ -230,6 +236,29 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  switch (BaseMode)
+		{
+	  case exactoSD_init:
+		  BlinkLed(50);
+		  HAL_Delay(4950);
+		  break;
+	  case exactoSD_erro:
+		  BlinkLed(50);
+		  HAL_Delay(50);
+		  BlinkLed(50);
+		  HAL_Delay(4850);
+		  break;
+	  case exactoSD_wait:
+		  BlinkLed(50);
+		  HAL_Delay(50);
+		  BlinkLed(50);
+		  HAL_Delay(850);
+		  break;
+	  case exactoSD_meas:
+		  BlinkLed(5);
+		  HAL_Delay(5);
+		  break;
+		}
   }
   /* USER CODE END 3 */
 }
