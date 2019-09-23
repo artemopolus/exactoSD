@@ -39,6 +39,7 @@
 /* USER CODE BEGIN PD */
 
 #define I2C_mode
+#define I2C_mode_read
 #define UART_mode
 
 #define SD_mode
@@ -126,9 +127,9 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 
-#ifdef SD_mode
-	UINT I2CgetDTcnt;
-#endif
+//#ifdef SD_mode
+//	UINT I2CgetDTcnt;
+//#endif
 
   /* USER CODE END 1 */
   
@@ -186,7 +187,7 @@ int main(void)
 //	  SDcardOpenDir(&sdcfhtd, "data");
 //	  SDcardOpenFile2write(&sdcfhtd, "data/newfile2.txt");
 
-	  UINT getmsglen;
+//	  UINT getmsglen;
 //	  SDcardWrite2file(&sdcfhtd, (uint8_t*)"hello", (UINT)5, &getmsglen);
 //	  SDcardCloseFile(&sdcfhtd);
 #endif
@@ -266,9 +267,14 @@ int main(void)
 	  case exactoSD_wait:
 		  if(flgBtnPress)
 		  {
+			  flgBtnPress = 0;
+#ifdef SD_mode
 			  CloseSession();
 			  InitNewSession();
-			  flgBtnPress = 0;
+#endif
+#ifdef I2C_mode
+			  SetExactoIMUmode(0);
+#endif
 		  }
 		  BlinkLed(50);
 		  HAL_Delay(50);
@@ -279,6 +285,15 @@ int main(void)
 		  if(flgBtnPress)
 		  {
 			  flgBtnPress = 0;
+#ifdef I2C_mode
+			  SetExactoIMUmode(1);
+#endif
+		  }
+		  else
+		  {
+#ifdef I2C_mode_read
+			  GetExactoIMUdata();
+#endif
 		  }
 		  BlinkLed(5);
 		  HAL_Delay(5);
@@ -602,6 +617,7 @@ static void SetExactoIMUmode(uint8_t mode)
 		break;
 	}
 	HAL_I2C_Master_Transmit(&hi2c2, (TargetI2Cdevice<<1), ptI2Cbuffer2transmit, 4, 10);
+	HAL_Delay(100);
 }
 static void GetExactoIMUdata(void)
 {
