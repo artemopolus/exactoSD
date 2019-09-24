@@ -235,7 +235,7 @@ int main(void)
 		  InitNewSession();
 #endif
 #ifdef Led_mode
-		  LedSignalOn();
+		 // LedSignalOn();
 #endif
 #ifdef I2C_mode
 	  }
@@ -276,7 +276,7 @@ int main(void)
 			  CloseSession();
 			  InitNewSession();
 #endif
-#ifdef I2C_mode
+#ifdef I2C_mode_read
 			  SetExactoIMUmode(0);
 #endif
 		  }
@@ -289,7 +289,7 @@ int main(void)
 		  if(flgBtnPress)
 		  {
 			  flgBtnPress = 0;
-#ifdef I2C_mode
+#ifdef I2C_mode_read
 			  SetExactoIMUmode(1);
 #endif
 		  }
