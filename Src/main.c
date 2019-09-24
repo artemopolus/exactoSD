@@ -61,9 +61,6 @@
 
 /* Private variables ---------------------------------------------------------*/
 
-uint8_t ptI2Cbuffer2transmit[] = {0,2,0,0};
-uint8_t ptI2Cbuffer4receive[I2C_RECEIVE_CNT] = {0};
-
 I2C_HandleTypeDef hi2c2;
 
 SD_HandleTypeDef hsd1;
@@ -73,6 +70,9 @@ DMA_HandleTypeDef hdma_sdmmc1_tx;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
+
+uint8_t ptI2Cbuffer2transmit[I2C_TRANSMIT_CNT] = {0};
+uint8_t ptI2Cbuffer4receive[I2C_RECEIVE_CNT] = {0};
 
 exactoSD_modes BaseMode = exactoSD_init;
 
@@ -130,6 +130,10 @@ static void CloseSession(void);
 int main(void)
 {
   /* USER CODE BEGIN 1 */
+
+#ifdef I2C_mode
+	ptI2Cbuffer2transmit[1] = 2;
+#endif
 
 //#ifdef SD_mode
 //	UINT I2CgetDTcnt;
