@@ -54,10 +54,15 @@
 #define DELAY_1HZ	1000
 #define I2C_RECEIVE_CNT	(uint16_t)380
 #define I2C_RECEIVE_TMT	10
+#define I2C_TRANSMIT_TMT 10
+#define I2C_TRANSMIT_CNT 4
 
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+
+uint8_t ptI2Cbuffer2transmit[] = {0,2,0,0};
+uint8_t ptI2Cbuffer4receive[I2C_RECEIVE_CNT] = {0};
 
 I2C_HandleTypeDef hi2c2;
 
@@ -83,8 +88,7 @@ TCHAR FileName[] = "dtss/ss0000.txt";
 TCHAR DirrName[] = "dtss/";
 uint8_t BufferTMP[10];
 __IO uint8_t I2Cflag = 0x00;
-uint8_t ptI2Cbuffer2transmit[] = {0,2,0,0};
-uint8_t ptI2Cbuffer4receive[I2C_RECEIVE_CNT] = {0};
+
 
 /* USER CODE END PV */
 
@@ -99,8 +103,8 @@ static void MX_USART2_UART_Init(void);
 
 #ifdef I2C_mode
 static uint8_t GetExactoIMUaddress(void);
-static void SetExactoIMUmode(uint8_t mode);
-static void GetExactoIMUdata(void);
+static uint8_t SetExactoIMUmode(uint8_t mode);
+static uint8_t GetExactoIMUdata(void);
 #endif
 
 #ifdef Led_mode
@@ -605,7 +609,7 @@ static void CloseSession(void)
 #endif
 
 #ifdef I2C_mode
-static void SetExactoIMUmode(uint8_t mode)
+static uint8_t SetExactoIMUmode(uint8_t mode)
 {
 	switch (mode)
 	{
@@ -616,12 +620,20 @@ static void SetExactoIMUmode(uint8_t mode)
 		ptI2Cbuffer2transmit[3] = 4;
 		break;
 	}
-	HAL_I2C_Master_Transmit(&hi2c2, (TargetI2Cdevice<<1), ptI2Cbuffer2transmit, 4, 10);
+	if(HAL_I2C_Master_Transmit(&hi2c2, (TargetI2Cdevice<<1), ptI2Cbuffer2transmit, I2C_TRANSMIT_CNT, I2C_TRANSMIT_TMT)== HAL_OK)
+		__NOP();
+	else
+		__NOP();
 	HAL_Delay(100);
+	return 1;
 }
-static void GetExactoIMUdata(void)
+static uint8_t GetExactoIMUdata(void)
 {
-	HAL_I2C_Master_Receive(&hi2c2, (TargetI2Cdevice<<1), ptI2Cbuffer4receive, I2C_RECEIVE_CNT, I2C_RECEIVE_TMT);
+	if(HAL_I2C_Master_Receive(&hi2c2, (TargetI2Cdevice<<1), ptI2Cbuffer4receive, I2C_RECEIVE_CNT, I2C_RECEIVE_TMT) == HAL_OK)
+		__NOP();
+	else
+		__NOP();
+	return 1;
 }
 #endif
 
