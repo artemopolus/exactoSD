@@ -84,8 +84,8 @@ SDcardFile_HandleTypeDef sdcfhtd;
 				  //01234567890123456789
 #endif
 				  //0123456789012345678
-TCHAR FileName[] = "dtss/ss0000.txt";
-TCHAR DirrName[] = "dtss/";
+TCHAR FileName[] = "/dtss/ss0000.txt";
+TCHAR DirrName[] = "/dtss";
 uint8_t BufferTMP[10];
 __IO uint8_t I2Cflag = 0x00;
 
@@ -598,7 +598,7 @@ static void InitNewSession(void)
 	  while(SDcardCountFiles(&sdcfhtd,DirrName,FileName) != 0)
 	  {
 		  uint8_t order = Dec_Convert(&BufferTMP[0],(int)iterator++);
-		  for(uint8_t i = 0; i < order; i++)	FileName[11 - order + i] = BufferTMP[10 - order + i];
+		  for(uint8_t i = 0; i < order; i++)	FileName[12 - order + i] = BufferTMP[10 - order + i];
 	  }
 	  SDcardOpenFile2write(&sdcfhtd, FileName);
 }
