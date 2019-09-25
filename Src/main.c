@@ -57,6 +57,14 @@
 #define I2C_TRANSMIT_TMT 10
 #define I2C_TRANSMIT_CNT 4
 
+#define BTN_SILENCE_TIME	100
+
+#define LED_EXMODE_BLNK_TIME	5
+#define LED_EXMODE_SLOW_TIME 5000
+#define LED_EXMODE_MEDI_TIME 1000
+#define LED_EXMODE_FAST_TIME 200
+
+
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -70,6 +78,12 @@ DMA_HandleTypeDef hdma_sdmmc1_tx;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
+
+
+__IO uint32_t BTN_LastClckHappen;
+__IO uint32_t LED_EXMODE_LstEVTm;
+
+
 
 uint8_t ptI2Cbuffer2transmit[I2C_TRANSMIT_CNT] = {0};
 uint8_t ptI2Cbuffer4receive[I2C_RECEIVE_CNT] = {0};
@@ -167,6 +181,8 @@ int main(void)
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
   BaseMode = exactoSD_erro;
+  BTN_LastClckHappen = HAL_GetTick();
+  LED_EXMODE_LstEVTm = HAL_GetTick();
 
 #ifdef I2C_mode
 //  uint16_t possibleIndex;
@@ -559,6 +575,8 @@ void BlinkLed(uint32_t delay)
 }
 void BtnPress_Callback(void)
 {
+	if((HAL_GetTick() - BTN_LastClckHappen) > BTN_SILENCE_TIME)
+	{
 	flgBtnPress = 1;
 	switch (BaseMode)
 	{
@@ -571,6 +589,7 @@ void BtnPress_Callback(void)
 		case exactoSD_erro:
 		case exactoSD_init:
 			break;
+	}
 	}
 }
 #ifdef Led_mode
