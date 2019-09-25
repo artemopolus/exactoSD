@@ -300,10 +300,18 @@ int main(void)
 			  SetExactoIMUmode(0);
 #endif
 		  }
-		  BlinkLed(50);
-		  HAL_Delay(50);
-		  BlinkLed(50);
-		  HAL_Delay(850);
+		  if((HAL_GetTick() - LED_EXMODE_LstEVTm) > LED_EXMODE_MEDI_TIME)
+		  {
+			  LED_EXMODE_LstEVTm = HAL_GetTick();
+			  BlinkLed(LED_EXMODE_BLNK_TIME);
+			  HAL_Delay(50);
+			  BlinkLed(LED_EXMODE_BLNK_TIME);
+			  HAL_Delay(LED_EXMODE_MEDI_TIME - 50 - 2*LED_EXMODE_BLNK_TIME);
+		  }
+		  else
+		  {
+			  HAL_Delay(LED_EXMODE_MEDI_TIME);
+		  }
 		  break;
 	  case exactoSD_meas:
 		  if(flgBtnPress)
@@ -319,8 +327,16 @@ int main(void)
 			  GetExactoIMUdata();
 #endif
 		  }
-		  BlinkLed(5);
-		  HAL_Delay(5);
+		  if((HAL_GetTick() - LED_EXMODE_LstEVTm) > LED_EXMODE_FAST_TIME)
+		  {
+			  LED_EXMODE_LstEVTm = HAL_GetTick();
+			  BlinkLed(LED_EXMODE_BLNK_TIME);
+			  HAL_Delay(10 - LED_EXMODE_BLNK_TIME);
+		  }
+		  else
+		  {
+			  HAL_Delay(10);
+		  }
 		  break;
 		}
   }
@@ -578,6 +594,7 @@ void BtnPress_Callback(void)
 	if((HAL_GetTick() - BTN_LastClckHappen) > BTN_SILENCE_TIME)
 	{
 	flgBtnPress = 1;
+	BTN_LastClckHappen = HAL_GetTick();
 	switch (BaseMode)
 	{
 		case exactoSD_wait:
