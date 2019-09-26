@@ -641,6 +641,9 @@ static void InitNewSession(void)
 		  for(uint8_t i = 0; i < order; i++)	FileName[12 - order + i] = BufferTMP[10 - order + i];
 	  }
 	  SDcardOpenFile2write(&sdcfhtd, FileName);
+	  UINT getmsglen;
+	  uint8_t initstr[] = "new session\n";
+	  SDcardWrite2file(&sdcfhtd, initstr, (UINT)sizeof(initstr), &getmsglen);
 }
 static void CloseSession(void)
 {
@@ -670,9 +673,16 @@ static uint8_t SetExactoIMUmode(uint8_t mode)
 static uint8_t GetExactoIMUdata(void)
 {
 	if(HAL_I2C_Master_Receive(&hi2c2, (TargetI2Cdevice<<1), ptI2Cbuffer4receive, I2C_RECEIVE_CNT, I2C_RECEIVE_TMT) == HAL_OK)
-		__NOP();
+	{
+		UINT getmsglen;
+		SDcardWrite2fileln(&sdcfhtd, ptI2Cbuffer4receive, (UINT)I2C_RECEIVE_CNT, &getmsglen);
+	}
 	else
-		__NOP();
+	{
+		UINT getmsglen;
+		uint8_t initstr[] = "no data\n";
+		SDcardWrite2file(&sdcfhtd, initstr, (UINT)sizeof(initstr), &getmsglen);
+	}
 	return 1;
 }
 #endif
