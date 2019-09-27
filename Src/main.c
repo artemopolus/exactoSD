@@ -129,6 +129,7 @@ static void LedSignalOn(void);
 #ifdef SD_mode
 static void InitNewSession(void);
 static void CloseSession(void);
+static void DataHeaderWtiter(const uint8_t mode);
 #endif
 
 /* USER CODE END PFP */
@@ -196,6 +197,7 @@ int main(void)
 #ifdef SD_mode
   if(SDcardSelfTest(&sdcfhtd) == SDcard_success)
   {
+	  BaseMode = exactoSD_init;
 #endif
 #ifdef I2C_mode
 	  if(TargetI2Cdevice != 0xff)
@@ -600,25 +602,69 @@ static void CloseSession(void)
 {
 	SDcardCloseFile(&sdcfhtd);
 }
+static void DataHeaderWtiter(const uint8_t mode)
+{
+	UINT getmsglen;
+	switch (mode)
+	{
+	case 0:
+		SDcardWrite2file(&sdcfhtd, (uint8_t*)"err_unknw\n", (UINT)10, &getmsglen);
+		break;
+	case 1:
+		SDcardWrite2file(&sdcfhtd, (uint8_t*)"cmd_stopp\n", (UINT)10, &getmsglen);
+		break;
+	case 2:
+		SDcardWrite2file(&sdcfhtd, (uint8_t*)"err_stopp\n", (UINT)10, &getmsglen);
+		break;
+	case 3:
+		SDcardWrite2file(&sdcfhtd, (uint8_t*)"cmd_start\n", (UINT)10, &getmsglen);
+		break;
+	case 4:
+		SDcardWrite2file(&sdcfhtd, (uint8_t*)"err_start\n", (UINT)10, &getmsglen);
+		break;
+	default:
+		return;
+	}
+
+
+}
 #endif
 
 #ifdef I2C_mode
 static uint8_t SetExactoIMUmode(uint8_t mode)
 {
+	uint8_t command = 0;
 	switch (mode)
 	{
 	case 0:
 		ptI2Cbuffer2transmit[3] = ALLWAITING_ESM;
+		command = 1;
 		break;
 	case 1:
 		ptI2Cbuffer2transmit[3] = ONLYLSM303_ESM_FST;
+		command = 3;
+		break;
+	case 2:
+		ptI2Cbuffer2transmit[3] = ALLRUNNING_ESM_FST;
+		command = 3;
 		break;
 	}
 	if(HAL_I2C_Master_Transmit(&hi2c2, (TargetI2Cdevice<<1), ptI2Cbuffer2transmit, I2C_TRANSMIT_CNT, I2C_TRANSMIT_TMT)== HAL_OK)
-		__NOP();
+	{
+		DataHeaderWtiter(command);
+	}
 	else
-		__NOP();
+	{
+		if(command)
+		{
+			command++;
+			DataHeaderWtiter(command);
+		}
+		else
+			DataHeaderWtiter(0);
+	}
 	HAL_Delay(100);
+
 	return 1;
 }
 static uint8_t GetExactoIMUdata(void)
