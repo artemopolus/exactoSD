@@ -27,6 +27,7 @@
 
 #include "SDcardFun.h"
 #include "ExSuppFun.h"
+#include "exacto_struct.h"
 
 /* USER CODE END Includes */
 
@@ -146,7 +147,10 @@ int main(void)
   /* USER CODE BEGIN 1 */
 
 #ifdef I2C_mode
-	ptI2Cbuffer2transmit[1] = 2;
+	ptI2Cbuffer2transmit[1] = 2; // 1 read or 2 write
+	ptI2Cbuffer2transmit[2] = READSENSMODE_ES32A;
+	ptI2Cbuffer2transmit[3] = ALLWAITING_ESM;
+
 #endif
 
 //#ifdef SD_mode
@@ -657,10 +661,10 @@ static uint8_t SetExactoIMUmode(uint8_t mode)
 	switch (mode)
 	{
 	case 0:
-		ptI2Cbuffer2transmit[3] = 0;
+		ptI2Cbuffer2transmit[3] = ALLWAITING_ESM;
 		break;
 	case 1:
-		ptI2Cbuffer2transmit[3] = 4;
+		ptI2Cbuffer2transmit[3] = ONLYLSM303_ESM_FST;
 		break;
 	}
 	if(HAL_I2C_Master_Transmit(&hi2c2, (TargetI2Cdevice<<1), ptI2Cbuffer2transmit, I2C_TRANSMIT_CNT, I2C_TRANSMIT_TMT)== HAL_OK)
