@@ -189,20 +189,6 @@ int main(void)
   LED_EXMODE_LstEVTm = HAL_GetTick();
 
 #ifdef I2C_mode
-//  uint16_t possibleIndex;
-//  for ( possibleIndex = 0x01; possibleIndex < 127; possibleIndex++)
-//  {
-//	  if(HAL_I2C_IsDeviceReady(&hi2c2,(possibleIndex<<1),1,100) == HAL_OK)
-//	  {
-//		  TargetI2Cdevice = possibleIndex;
-//	  }
-//	  else
-//		  __NOP();
-//  }
-//  if(TargetI2Cdevice != 0xff)
-//  {
-//	  __NOP();
-//  }
   TargetI2Cdevice = GetExactoIMUaddress();
 #endif
 
@@ -210,14 +196,6 @@ int main(void)
 #ifdef SD_mode
   if(SDcardSelfTest(&sdcfhtd) == SDcard_success)
   {
-
-
-//	  SDcardOpenDir(&sdcfhtd, "data");
-//	  SDcardOpenFile2write(&sdcfhtd, "data/newfile2.txt");
-
-//	  UINT getmsglen;
-//	  SDcardWrite2file(&sdcfhtd, (uint8_t*)"hello", (UINT)5, &getmsglen);
-//	  SDcardCloseFile(&sdcfhtd);
 #endif
 #ifdef I2C_mode
 	  if(TargetI2Cdevice != 0xff)
@@ -225,37 +203,6 @@ int main(void)
 #endif
 #ifdef SD_mode
 		  BaseMode = exactoSD_wait;
-		  //check file names
-//		  uint16_t iterator = 1;
-//		  SDcardOpenDir(&sdcfhtd, "dtss");
-//
-//		  while(SDcardTryOpen(&sdcfhtd, FileName) == SDcard_success)
-//		  {
-//			  uint8_t order = Dec_Convert(&BufferTMP[0],(int)iterator++);
-//			  for(uint8_t i = 0; i < order; i++)	FileName[11 - order + i] = BufferTMP[10 - order + i];
-//		  }
-////		  TCHAR trgpath_tmp[] = "dtss/ss0000.txt";
-//		  SDcardOpenFile2write(&sdcfhtd, FileName);
-//		  SDcardWrite2file(&sdcfhtd, (uint8_t*)"new session\n", (UINT)sizeof("new session\n"), &getmsglen);
-//
-//		  uint8_t i = 0;
-//		  while(i++ < 1)
-//		  {
-//			  ptI2Cbuffer2transmit[3] = 4;
-//			  HAL_I2C_Master_Transmit(&hi2c2, (TargetI2Cdevice<<1), ptI2Cbuffer2transmit, 4, 10);
-//			  HAL_Delay(100);
-//			  uint8_t j = 0;
-//			  while(j++ < 10)
-//			  {
-//					  HAL_I2C_Master_Receive(&hi2c2, (TargetI2Cdevice<<1), ptI2Cbuffer4receive, I2C_RECEIVE_CNT, I2C_RECEIVE_TMT);
-//					HAL_Delay(10);
-//			  }
-//			  HAL_Delay(100);
-//			  ptI2Cbuffer2transmit[3] = 0;
-//			  HAL_I2C_Master_Transmit(&hi2c2, (TargetI2Cdevice<<1), ptI2Cbuffer2transmit, 4, 10);
-//		  }
-//
-//		  SDcardCloseFile(&sdcfhtd);
 		  InitNewSession();
 #endif
 #ifdef Led_mode
